@@ -5,7 +5,7 @@ import Vue from 'vue'
 
 import VueProgressBar from 'vue-progressbar'
 const VueProgressBarOptions = {
-    color: '#0b1bef',
+    color: '#15b203',
     failedColor: '#874b4b',
     thickness: '5px',
     transition: {
@@ -19,8 +19,9 @@ const VueProgressBarOptions = {
   }
 Vue.use(VueProgressBar, VueProgressBarOptions);  
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('customer-component', require('./components/CustomerComponent.vue').default);
+Vue.component('pagination', require('./components/PaginationComponent.vue').default);
 
 const app = new Vue({
     el: '#app'

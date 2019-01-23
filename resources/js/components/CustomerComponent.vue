@@ -33,7 +33,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getCustomer()"></pagination>
                         </div>
                     </div>
                 </div>
@@ -48,6 +48,9 @@
         data(){
             return {
                 customers: [],
+                pagination: {
+                    current_page : 1,
+                }
             }
         },
         mounted() {
@@ -58,9 +61,10 @@
         methods: {
             getCustomer(){
                 this.$Progress.start()
-                axios.get('/api/customers')
+                axios.get('/api/customers?page='+this.pagination.current_page)
                 .then( response => {
                     this.customers = response.data.data
+                    this.pagination = response.data.meta
                     this.$Progress.finish()
                 })
                 .catch( e => {
