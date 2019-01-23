@@ -10,22 +10,26 @@
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>SL</th>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                        <th>Action</th>
+                                        <th width="5%">SL</th>
+                                        <th width="20%">Name</th>
+                                        <th width="10%">Phone</th>
+                                        <th width="25%">Email</th>
+                                        <th width="25%">Address</th>
+                                        <th class="text-center" width="15%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                    <tr v-for="(customer, n) in customers" :key="customer.id">
+                                        <td>{{n + 1}}</td>
+                                        <td>{{customer.name}}</td>
+                                        <td>{{customer.phone}}</td>
+                                        <td>{{customer.email}}</td>
+                                        <td>{{customer.address}}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
+                                            <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></button>
+                                            <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -35,13 +39,35 @@
                 </div>
             </div>
         </div>
+    <vue-progress-bar></vue-progress-bar>
     </div>
 </template>
 
 <script>
     export default {
+        data(){
+            return {
+                customers: [],
+            }
+        },
         mounted() {
             console.log('Component mounted.')
+            this.getCustomer();
+        },
+
+        methods: {
+            getCustomer(){
+                this.$Progress.start()
+                axios.get('/api/customers')
+                .then( response => {
+                    this.customers = response.data.data
+                    this.$Progress.finish()
+                })
+                .catch( e => {
+                    console.log(e)
+                    this.$Progress.fail()
+                })
+            }
         }
     }
 </script>

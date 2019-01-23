@@ -22,6 +22,10 @@ class CustomerController extends Controller
         return new CustomerCollection(Customer::latest()->paginate(10));
     }
 
+    public function search($field, $query){
+        return new CustomerCollection(Customer::where($field,'LIKE',"%$query%")->latest()->paginate(10));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -30,7 +34,21 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required',
+            'phone' => 'required|numeric|digits:11',
+            'email' => 'required|email|unique:customers',
+            'address' => 'required',
+        ]);
+        
+        $customer = new Customer();
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->email = $request->email;
+        $customer->address = $request->address;
+        $customer->save();
+
+        return new CustomerResource($customer);
     }
 
     /**
@@ -53,7 +71,21 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required',
+            'phone' => 'required|numeric|digits:11',
+            'email' => 'required|email|unique:customers,email,'.$id,
+            'address' => 'required',
+        ]);
+        
+        $customer = Customer::find($id);
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->email = $request->email;
+        $customer->address = $request->address;
+        $customer->save();
+
+        return new CustomerResource($customer);
     }
 
     /**
@@ -64,6 +96,8 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $customer = Customer::find($id);
+        $customer->delete();
+        return new CustomerResource($customer);
     }
 }
