@@ -3,9 +3,33 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
-                    <div class="card-header">Customers</div>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6">Customers</div>
+                            <div class="col-md-5 text-right">
+                                <button class="btn btn-sm btn-info"><i class="fa fa-refresh"></i>Reload</button>
+                            </div>
+                        </div>
+
+                    </div>
 
                     <div class="card-body">
+                            <div class="row card-body">
+                                <div class="col-md-2">
+                                    <strong>Search By :</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    <select v-model="field" id="" class="form-control form-control-sm">
+                                        <option value="name">Name</option>
+                                        <option value="phone">Phone</option>
+                                        <option value="email">Email</option>
+                                        <option value="address">Address</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <input v-model="query" type="search" placeholder="Search" class="form-control form-control-sm">
+                                </div>
+                            </div>
                         <div class="table-responsible">
                             <table class="table table-sm table-bordered">
                                 <thead>
@@ -19,7 +43,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(customer, n) in customers" :key="customer.id">
+                                    <tr v-show="customers.length" v-for="(customer, n) in customers" :key="customer.id">
                                         <td>{{n + 1}}</td>
                                         <td>{{customer.name}}</td>
                                         <td>{{customer.phone}}</td>
@@ -31,9 +55,16 @@
                                             <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
+                                    <tr v-show="!customers.length">
+                                        <td colspan="7">
+                                            <div class="alert alert-danger text-center">
+                                                <strong>Sorry No Data Found</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
-                            <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getCustomer()"></pagination>
+                            <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="query ==='' ? getCustomer() : serachCustomer()"></pagination>
                         </div>
                     </div>
                 </div>
@@ -47,14 +78,26 @@
     export default {
         data(){
             return {
+                query: '',
+                field: 'name',
                 customers: [],
                 pagination: {
                     current_page : 1,
                 }
             }
         },
+
+        watch: {
+            query:function (newData, oldData){ 
+                if(newData === ''){
+                    this.getCustomer();
+                }else{
+                    this.serachCustomer();
+                }
+            }
+        },
         mounted() {
-            console.log('Component mounted.')
+            // console.log('Component mounted.')
             this.getCustomer();
         },
 
@@ -62,6 +105,20 @@
             getCustomer(){
                 this.$Progress.start()
                 axios.get('/api/customers?page='+this.pagination.current_page)
+                .then( response => {
+                    this.customers = response.data.data
+                    this.pagination = response.data.meta
+                    this.$Progress.finish()
+                })
+                .catch( e => {
+                    console.log(e)
+                    this.$Progress.fail()
+                })
+            },
+
+            serachCustomer(){
+                this.$Progress.start()
+                axios.get('/api/search/customers/'+this.field+'/'+this.query+'?page='+this.pagination.current_page)
                 .then( response => {
                     this.customers = response.data.data
                     this.pagination = response.data.meta

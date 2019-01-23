@@ -1808,17 +1808,59 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      query: '',
+      field: 'name',
       customers: [],
       pagination: {
         current_page: 1
       }
     };
   },
+  watch: {
+    query: function query(newData, oldData) {
+      if (newData === '') {
+        this.getCustomer();
+      } else {
+        this.serachCustomer();
+      }
+    }
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    // console.log('Component mounted.')
     this.getCustomer();
   },
   methods: {
@@ -1835,6 +1877,21 @@ __webpack_require__.r(__webpack_exports__);
         console.log(e);
 
         _this.$Progress.fail();
+      });
+    },
+    serachCustomer: function serachCustomer() {
+      var _this2 = this;
+
+      this.$Progress.start();
+      axios.get('/api/search/customers/' + this.field + '/' + this.query + '?page=' + this.pagination.current_page).then(function (response) {
+        _this2.customers = response.data.data;
+        _this2.pagination = response.data.meta;
+
+        _this2.$Progress.finish();
+      }).catch(function (e) {
+        console.log(e);
+
+        _this2.$Progress.fail();
       });
     }
   }
@@ -36830,9 +36887,87 @@ var render = function() {
       _c("div", { staticClass: "row justify-content-center" }, [
         _c("div", { staticClass: "col-md-12" }, [
           _c("div", { staticClass: "card card-default" }, [
-            _c("div", { staticClass: "card-header" }, [_vm._v("Customers")]),
+            _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row card-body" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.field,
+                          expression: "field"
+                        }
+                      ],
+                      staticClass: "form-control form-control-sm",
+                      attrs: { id: "" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.field = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "name" } }, [
+                        _vm._v("Name")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "phone" } }, [
+                        _vm._v("Phone")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "email" } }, [
+                        _vm._v("Email")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "address" } }, [
+                        _vm._v("Address")
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.query,
+                        expression: "query"
+                      }
+                    ],
+                    staticClass: "form-control form-control-sm",
+                    attrs: { type: "search", placeholder: "Search" },
+                    domProps: { value: _vm.query },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.query = $event.target.value
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
               _c(
                 "div",
                 { staticClass: "table-responsible" },
@@ -36841,26 +36976,57 @@ var render = function() {
                     "table",
                     { staticClass: "table table-sm table-bordered" },
                     [
-                      _vm._m(0),
+                      _vm._m(2),
                       _vm._v(" "),
                       _c(
                         "tbody",
-                        _vm._l(_vm.customers, function(customer, n) {
-                          return _c("tr", { key: customer.id }, [
-                            _c("td", [_vm._v(_vm._s(n + 1))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.name))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.phone))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.email))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.address))]),
-                            _vm._v(" "),
-                            _vm._m(1, true)
-                          ])
-                        }),
-                        0
+                        [
+                          _vm._l(_vm.customers, function(customer, n) {
+                            return _c(
+                              "tr",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.customers.length,
+                                    expression: "customers.length"
+                                  }
+                                ],
+                                key: customer.id
+                              },
+                              [
+                                _c("td", [_vm._v(_vm._s(n + 1))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(customer.name))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(customer.phone))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(customer.email))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(customer.address))]),
+                                _vm._v(" "),
+                                _vm._m(3, true)
+                              ]
+                            )
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "tr",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: !_vm.customers.length,
+                                  expression: "!customers.length"
+                                }
+                              ]
+                            },
+                            [_vm._m(4)]
+                          )
+                        ],
+                        2
                       )
                     ]
                   ),
@@ -36870,7 +37036,9 @@ var render = function() {
                         attrs: { pagination: _vm.pagination, offset: 5 },
                         on: {
                           paginate: function($event) {
-                            _vm.getCustomer()
+                            _vm.query === ""
+                              ? _vm.getCustomer()
+                              : _vm.serachCustomer()
                           }
                         }
                       })
@@ -36889,6 +37057,31 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6" }, [_vm._v("Customers")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-5 text-right" }, [
+          _c("button", { staticClass: "btn btn-sm btn-info" }, [
+            _c("i", { staticClass: "fa fa-refresh" }),
+            _vm._v("Reload")
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [
+      _c("strong", [_vm._v("Search By :")])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -36933,6 +37126,16 @@ var staticRenderFns = [
         { staticClass: "btn btn-sm btn-danger", attrs: { type: "button" } },
         [_c("i", { staticClass: "fa fa-trash" })]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { attrs: { colspan: "7" } }, [
+      _c("div", { staticClass: "alert alert-danger text-center" }, [
+        _c("strong", [_vm._v("Sorry No Data Found")])
+      ])
     ])
   }
 ]
