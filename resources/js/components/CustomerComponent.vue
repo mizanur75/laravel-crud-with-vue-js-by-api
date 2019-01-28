@@ -1,13 +1,13 @@
 <template>
-    <div id="customer">
+<div id="customer">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-6">Customers</div>
-                            <div class="col-md-5 text-right">
-                                <button class="btn btn-sm btn-info"><i class="fa fa-refresh"></i>Reload</button>
+                            <div class="col-md-6 text-right">
+                                <button class="btn btn-sm btn-info" @click="createCustomerModal"><i class="fa fa-plus"></i><i class="fa fa-user"></i> Add Customer</button>
                             </div>
                         </div>
 
@@ -70,17 +70,75 @@
                 </div>
             </div>
         </div>
+
+<!--Start Add Customer Modal -->
+
+        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="customerModalLabel">Add New Customer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form @submit.prevent="storeCustomer" @keydown="form.onKeydown($event)">
+                        <div class="modal-body">
+                            <alert-error :form="form"></alert-error>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input v-model="form.name" type="text" name="name"
+                                    class="form-control form-control-sm" :class="{ 'is-invalid': form.errors.has('name') }">
+                                <has-error :form="form" field="name"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input v-model="form.phone" type="phone" name="phone"
+                                    class="form-control form-control-sm" :class="{ 'is-invalid': form.errors.has('phone') }">
+                                <has-error :form="form" field="phone"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input v-model="form.email" type="email" name="email"
+                                    class="form-control form-control-sm" :class="{ 'is-invalid': form.errors.has('email') }">
+                                <has-error :form="form" field="email"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input v-model="form.address" type="text" name="address"
+                                    class="form-control form-control-sm" :class="{ 'is-invalid': form.errors.has('address') }">
+                                <has-error :form="form" field="address"></has-error>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                            <button :disabled="form.busy" type="submit" class="btn btn-sm btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+<!--End Add Customer Modal -->
+
     <vue-progress-bar></vue-progress-bar>
-    </div>
+    <vue-snotify></vue-snotify>
+</div>
 </template>
 
 <script>
     export default {
         data(){
-            return {
+            return {                
                 query: '',
                 field: 'name',
                 customers: [],
+                form : new Form({
+                    id :'',
+                    name: '',
+                    phone: '',
+                    email: '',
+                    address:''
+                }),
                 pagination: {
                     current_page : 1,
                 }
@@ -116,6 +174,33 @@
                 })
             },
 
+            createCustomerModal(){
+                this.form.reset()
+                this.form.clear()
+                $('#customerModal').modal('show')
+                // this.$snotify.success("Success")
+            },
+            storeCustomer(){
+                this.$Progress.start()
+                this.form.busy =true
+                this.form.post('/api/customers')
+                .then(response => {
+                    
+                    $('#customerModal').modal('hide')
+                    this.getCustomer()
+                    if(this.form.successful){
+                        this.$Progress.finish()
+                        this.$snotify.success('Customer Added Successfully!','Success')
+                    }else{
+                        this.$Progress.fail()
+                        this.$snotify.error('Something Went Wrong!','Error')
+                    }
+                }).catch(e=>{
+                    this.$Progress.fail()
+                    console.log(e)
+                })
+            },
+
             serachCustomer(){
                 this.$Progress.start()
                 axios.get('/api/search/customers/'+this.field+'/'+this.query+'?page='+this.pagination.current_page)
@@ -123,6 +208,7 @@
                     this.customers = response.data.data
                     this.pagination = response.data.meta
                     this.$Progress.finish()
+                    // this.$snotify.success("Data Search")
                 })
                 .catch( e => {
                     console.log(e)
