@@ -5,6 +5,7 @@ import Vue from 'vue'
 import {Form, HasError, AlertError} from 'vform'
 import VueProgressBar from 'vue-progressbar'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
+import VueResource from "vue-resource"
 window.Form = Form
 const SnotifyOptions = {
   toast: {
@@ -13,6 +14,7 @@ const SnotifyOptions = {
 }
 
 Vue.use(Snotify, SnotifyOptions)
+Vue.use(VueResource);
 
 const VueProgressBarOptions = {
     color: '#15b203',
@@ -33,6 +35,7 @@ Vue.use(VueProgressBar, VueProgressBarOptions);
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('customer-component', require('./components/CustomerComponent.vue').default);
 Vue.component('pagination', require('./components/PaginationComponent.vue').default);
+Vue.component('invoice-component', require('./components/InvoiceComponent.vue').default);
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 

@@ -15,3 +15,6 @@ Route::get('login/facebook/callback', 'Auth\LoginController@handleProviderCallba
 
 //Customers
 Route::get('customers','CustomerController')->name('customers');
+
+//Invoice
+Route::get('invoice','InvoiceController')->name('invoice');

@@ -50,7 +50,7 @@
                                         <td>{{customer.email}}</td>
                                         <td>{{customer.address}}</td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
+                                            <button type="button" @click="customerDetails" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
                                             <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></button>
                                             <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                         </td>
@@ -119,6 +119,30 @@
             </div>
         </div>
 <!--End Add Customer Modal -->
+
+<!--Start Customer Details Modal -->
+        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="customerModalLabel">Add New Customer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <h1>This Customer Details Modal</h1>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                        <button :disabled="form.busy" type="submit" class="btn btn-sm btn-primary">Save changes</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+<!--End Customer Details Modal -->
 
     <vue-progress-bar></vue-progress-bar>
     <vue-snotify></vue-snotify>
@@ -199,6 +223,10 @@
                     this.$Progress.fail()
                     console.log(e)
                 })
+            },
+
+            customerDetails(){
+                this.$snotify.success('Success!')
             },
 
             serachCustomer(){

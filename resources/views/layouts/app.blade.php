@@ -56,10 +56,15 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link" href="{{route('customers')}}">
+                                <a id="navbarDropdown" class="nav-link" href="{{route('customers')}}">
                                     Customers
                                 </a>
 
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link" href="{{route('invoice')}}">
+                                    Invoice
+                                </a>
                             </li>
                             <li class="nav-item dropdown">
                             
