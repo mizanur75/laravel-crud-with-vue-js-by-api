@@ -1,3 +1,5 @@
+Component element
+====================
 <script>
     export default {
         data(){
