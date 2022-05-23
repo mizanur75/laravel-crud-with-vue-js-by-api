@@ -90,3 +90,8 @@
         }
     }
 </script>
+
+Install Vue Progressbar
+=========================
+npm install vue-progressbar -s
+
